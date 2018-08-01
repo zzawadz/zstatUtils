@@ -38,7 +38,12 @@ make_sbt_engine <- function(path) {
       outputPath <- file.path(PATH, "build.sbt")
       cat(file = outputPath, code, "\n")
 
-      system2(system.file("runSbt.sh", package = "zstatUtils"), PATH, stdout = TRUE, stderr = TRUE)
+      if(!check_sbt_cache(PATH)) {
+        system2(
+          system.file("runSbt.sh", package = "zstatUtils"),
+          PATH, stdout = TRUE, stderr = TRUE
+        )
+      }
 
       output <- "build.sbt created"
 
@@ -53,6 +58,19 @@ make_sbt_engine <- function(path) {
 
     engine_output(options, options$code, output)
   }
+}
+
+check_sbt_cache <- function(path) {
+  cacheInfoFile <- file.path(path, ".rscinfo")
+  if(!file.exists(cacheInfoFile)) cat(file = cacheInfoFile, "\n")
+
+  allPaths <- file.path(path, c("build.sbt", "project/plugins.sbt"))
+  lines <- unlist(lapply(allPaths, readLines, warn = FALSE))
+  oldHash <- readLines(cacheInfoFile, warn = FALSE)[1]
+  newHash <- digest::digest(lines)
+  cat(file = cacheInfoFile, newHash)
+
+  return(oldHash == newHash)
 }
 
 get_jars_from_sbt_project <- function(path) {
