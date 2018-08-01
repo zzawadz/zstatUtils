@@ -1,10 +1,11 @@
 Package: zstatUtils
-Title: What the Package Does (one line, title case)
+Title: Provides some utility functions.
 Version: 0.0.1
 Authors@R: person("Zygmunt", "Zawadzki", email = "zygmunt@zstat.pl", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: A collection of some utility functions.
 Depends: R (>= 3.4.4)
-License: What license is it under?
+License: GPL
 Encoding: UTF-8
 LazyData: true
 Imports: knitr, rscala
+RoxygenNote: 6.0.1

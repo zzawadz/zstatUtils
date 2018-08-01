@@ -1,3 +1,9 @@
+#' Scala engine for knitr.
+#'
+#' @param ... params passed to \code{\link{scala}} function from rscala package.
+#'
+#' @export
+#'
 make_scala_engine <- function(...) {
 
   rscala::scala(assign.name = "engine", serialize.output = TRUE, stdout = "", ...)
@@ -9,6 +15,13 @@ make_scala_engine <- function(...) {
   }
 }
 
+
+#' An sbt engine which can be used to create scala engine in knitr.
+#'
+#' @param path the directory in which the sbt probject will be created.
+#'
+#' @export
+#'
 make_sbt_engine <- function(path) {
 
   PATH <- force(path)
