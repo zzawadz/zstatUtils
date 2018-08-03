@@ -4,13 +4,20 @@
 #'
 #' @export
 #'
-make_scala_engine <- function(...) {
+make_scala_engine <- function(..., stderr = FALSE) {
 
-  rscala::scala(assign.name = "engine", serialize.output = TRUE, stdout = "", ...)
+  rscala::scala(assign.name = "engine", serialize.output = TRUE, stdout = "", stderr = stderr, ...)
   engine <- force(engine)
   function(options) {
     code <- paste(options$code, collapse = "\n")
     output <- capture.output(invisible(engine + code))
+
+    if(!is.null(options$waitForResult) && options$waitForResult > 0) {
+      Sys.sleep(options$waitForResult)
+      output <- c(output, capture.output(invisible(engine + 'println("___RSCALAWAIT___")')))
+      output <- output[output != "___RSCALAWAIT___"]
+    }
+
     engine_output(options, options$code, output)
   }
 }
@@ -22,7 +29,7 @@ make_scala_engine <- function(...) {
 #'
 #' @export
 #'
-make_sbt_engine <- function(path) {
+make_sbt_engine <- function(path, stderr = FALSE) {
 
   PATH <- force(path)
   dir.create(file.path(PATH, "project"), recursive = TRUE, showWarnings = FALSE)
@@ -50,7 +57,7 @@ make_sbt_engine <- function(path) {
       jars <- get_jars_from_sbt_project(file.path(PATH, "target/pack/lib"))
       output <- c(output, "Some jars:", paste("-", basename(head(jars))))
 
-      knitr::knit_engines$set(scala = make_scala_engine(JARs = jars))
+      knitr::knit_engines$set(scala = make_scala_engine(JARs = jars, stderr = stderr))
 
     } else {
       stop("File is not supported.")
