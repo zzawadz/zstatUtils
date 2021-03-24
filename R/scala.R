@@ -10,7 +10,7 @@ make_scala_engine <- function(..., stderr = FALSE) {
   
   function(options) {
     code <- paste(options$code, collapse = "\n")
-    output <- capture.output(invisible(engine $ code()))
+    output <- capture.output(invisible(engine + code))
 
     if(!is.null(options$waitForResult) && options$waitForResult > 0) {
       Sys.sleep(options$waitForResult)
