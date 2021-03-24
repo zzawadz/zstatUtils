@@ -6,7 +6,7 @@
 #'
 make_scala_engine <- function(..., stderr = FALSE) {
 
-  rscala::scala(assign.name = "engine", serialize.output = TRUE, stdout = "", stderr = stderr, ...)
+  rscala::scala(serialize.output = TRUE, stdout = "", stderr = stderr, ...)
   engine <- force(engine)
   function(options) {
     code <- paste(options$code, collapse = "\n")
