@@ -6,11 +6,11 @@
 #'
 make_scala_engine <- function(..., stderr = FALSE) {
 
-  rscala::scala(serialize.output = TRUE, stdout = "", stderr = stderr, ...)
-  engine <- force(engine)
+  engine <- rscala::scala(serialize.output = TRUE, stdout = "", stderr = stderr, ...)
+  
   function(options) {
     code <- paste(options$code, collapse = "\n")
-    output <- capture.output(invisible(engine + code))
+    output <- capture.output(invisible(engine $ code))
 
     if(!is.null(options$waitForResult) && options$waitForResult > 0) {
       Sys.sleep(options$waitForResult)
